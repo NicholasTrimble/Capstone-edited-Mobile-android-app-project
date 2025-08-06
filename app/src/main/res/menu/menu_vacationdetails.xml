@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/vacationsave"
+        android:title="Save" />
+    <item
+        android:id="@+id/vacationdelete"
+        android:title="Delete" />
+    <item
+        android:id="@+id/alertstart"
+        android:title="Start Alert" />
+    <item
+        android:id="@+id/alertend"
+        android:title="End Alert" />
+    <item
+        android:id="@+id/alertfull"
+        android:title="Both Alerts" />
+    <item
+        android:id="@+id/share"
+        android:title="Share" />
+</menu>
