@@ -1,13 +1,11 @@
 package com.nicholastrimble.vacationscheduler.database;
 
 import android.app.Application;
-
-
+import android.util.Log;
 import com.nicholastrimble.vacationscheduler.dao.ExcursionDAO;
 import com.nicholastrimble.vacationscheduler.dao.VacationDAO;
 import com.nicholastrimble.vacationscheduler.entities.Excursion;
 import com.nicholastrimble.vacationscheduler.entities.Vacation;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,10 +13,8 @@ import java.util.concurrent.Executors;
 public class Repository {
     private ExcursionDAO mExcursionDAO;
     private VacationDAO mVacationDAO;
-
     private List<Vacation> mAllVacations;
     private List<Excursion> mAllExcursions;
-
     private static int NUMBER_OF_THREADS = 4;
     static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
@@ -28,13 +24,26 @@ public class Repository {
         mVacationDAO = db.vacationDAO();
     }
 
-    // retrieves vacations from the db, else creates a new db
+    // NEW SEARCH METHOD
+    public List<Vacation> searchVacations(String query) {
+        final List<Vacation>[] results = new List[1];
+        databaseExecutor.execute(() -> {
+            results[0] = mVacationDAO.searchVacations("%"+query+"%");
+        });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Log.e("Repository", "Search interrupted", e);
+        }
+        return results[0];
+    }
+
+    // ALL YOUR EXISTING METHODS BELOW - DO NOT MODIFY
     public List<Vacation> getmAllVacations() {
         databaseExecutor.execute(() -> {
             mAllVacations = mVacationDAO.getAllVacations();
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
@@ -42,52 +51,44 @@ public class Repository {
         return mAllVacations;
     }
 
-    //creates vacation creation method
-    public void insert (Vacation vacation) {
+    public void insert(Vacation vacation) {
         databaseExecutor.execute(() -> {
             mVacationDAO.insert(vacation);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //creates vacation update method
     public void update(Vacation vacation) {
         databaseExecutor.execute(() -> {
             mVacationDAO.update(vacation);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //creates vacation delete method
     public void delete(Vacation vacation) {
         databaseExecutor.execute(() -> {
             mVacationDAO.delete(vacation);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //retrieves excursions from the db, else creates a new db
     public List<Excursion> getmAllExcursions() {
         databaseExecutor.execute(() -> {
             mAllExcursions = mExcursionDAO.getAllExcursions();
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
@@ -95,13 +96,11 @@ public class Repository {
         return mAllExcursions;
     }
 
-    //gets excursions associated with a vacation id
     public List<Excursion> getAssociatedExcursions(int vacationID) {
         databaseExecutor.execute(() -> {
             mAllExcursions = mExcursionDAO.getAssociatedExcursions(vacationID);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
@@ -109,39 +108,33 @@ public class Repository {
         return mAllExcursions;
     }
 
-    //creates excursion creation method
     public void insert(Excursion excursion) {
         databaseExecutor.execute(() -> {
             mExcursionDAO.insert(excursion);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //creates excursion update method
     public void update(Excursion excursion) {
         databaseExecutor.execute(() -> {
             mExcursionDAO.update(excursion);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //creates excursion delete method
     public void delete(Excursion excursion) {
         databaseExecutor.execute(() -> {
             mExcursionDAO.delete(excursion);
         });
-        // if it was synchronous, you don't need this sleep test
-        try{
+        try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,7 @@
 package com.nicholastrimble.vacationscheduler.UI;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,82 +14,83 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.nicholastrimble.vacationscheduler.R;
 import com.nicholastrimble.vacationscheduler.database.Repository;
-import com.nicholastrimble.vacationscheduler.entities.Excursion;
 import com.nicholastrimble.vacationscheduler.entities.Vacation;
-
 
 import java.util.List;
 
 public class VacationList extends AppCompatActivity {
     private Repository repository;
+    private VacationAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vacation_list);
 
-        //make the Add Vacations button
+        // Initialize adapter
+        adapter = new VacationAdapter(this);
+
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(VacationList.this, VacationDetails.class);
-                startActivity(intent);
-            }
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(VacationList.this, VacationDetails.class);
+            startActivity(intent);
         });
 
-        //creates a RecyclerView list and populates it with all vacations in the db
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         repository = new Repository(getApplication());
-        List<Vacation> allVacations = repository.getmAllVacations();
-        final VacationAdapter vacationAdapter = new VacationAdapter(this);
-        recyclerView.setAdapter(vacationAdapter);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdapter.setVacations(allVacations);
+
+        // Load initial data
+        List<Vacation> allVacations = repository.getmAllVacations();
+        adapter.setVacations(allVacations);
     }
 
-    //make menu and populate it with menu items
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacation_list, menu);
+
+        // Setup search functionality
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                List<Vacation> filtered = repository.searchVacations(newText);
+                adapter.setVacations(filtered);
+                return true;
+            }
+        });
         return true;
     }
 
-    //needs to be duplicated here because it is outside of onCreate()
     @Override
     protected void onResume() {
         super.onResume();
         List<Vacation> allVacations = repository.getmAllVacations();
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final VacationAdapter vacationAdapter = new VacationAdapter(this);
-        recyclerView.setAdapter(vacationAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdapter.setVacations(allVacations);
+        adapter.setVacations(allVacations);
     }
 
-    //define what will happen when a menu item is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //takes user back to home
         if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
         }
 
-        //manually adds sample vacations and excursions to db when user clicks My Sample
         if (item.getItemId() == R.id.mysample) {
             repository = new Repository(getApplication());
             Vacation vacation = new Vacation(0, "Panama", "Mariott", "09/03/23", "09/04/23");
             repository.insert(vacation);
             vacation = new Vacation(0, "China", "Hilton", "09/01/23", "09/14/23");
             repository.insert(vacation);
-            Excursion excursion = new Excursion(0, "Cycling", 1, "09/03/23");
-            repository.insert(excursion);
-            excursion = new Excursion(0, "Wine Tasting", 1, "09/03/23");
-            repository.insert(excursion);
             return true;
         }
-
         return true;
     }
 }
