@@ -140,4 +140,13 @@ public class Repository {
             throw new RuntimeException(e);
         }
     }
+    public List<Vacation> getVacationsPage(int page) {
+        final int PAGE_SIZE = 10; // Load 10 items at a time
+        final List<Vacation>[] results = new List[1];
+        databaseExecutor.execute(() -> {
+            results[0] = mVacationDAO.getVacationsPaginated(PAGE_SIZE, page);
+        });
+        try { Thread.sleep(100); } catch (InterruptedException e) { /* handle */ }
+        return results[0];
+    }
 }

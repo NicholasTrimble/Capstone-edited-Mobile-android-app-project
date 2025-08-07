@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import com.nicholastrimble.vacationscheduler.database.SecurePrefs;
 
 public class VacationDetails extends AppCompatActivity {
 
@@ -57,6 +58,9 @@ public class VacationDetails extends AppCompatActivity {
 
     Random rand = new Random();
     int numAlert = rand.nextInt(99999);
+
+    // NEW: Input validation pattern
+    private static final String INVALID_CHARS_PATTERN = ".*[;'\"><].*";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +162,11 @@ public class VacationDetails extends AppCompatActivity {
         };
     }
 
+    // NEW: Input validation helper
+    private boolean isValidInput(String input) {
+        return !input.matches(INVALID_CHARS_PATTERN);
+    }
+
     private void updateLabelStart() {
         String myFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -205,6 +214,14 @@ public class VacationDetails extends AppCompatActivity {
         }
 
         if (item.getItemId() == R.id.vacationsave) {
+            String titleInput = editTitle.getText().toString();
+
+            // NEW: Input validation check
+            if (!isValidInput(titleInput)) {
+                Toast.makeText(this, "Invalid characters detected (; ' \" < >)", Toast.LENGTH_LONG).show();
+                return true;
+            }
+
             String myFormat = "MM/dd/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
             String startDateString = sdf.format(myCalendarStart.getTime());
@@ -220,11 +237,11 @@ public class VacationDetails extends AppCompatActivity {
                     if (vacationID == -1) {
                         if (repository.getmAllVacations().size() == 0) vacationID = 1;
                         else vacationID = repository.getmAllVacations().get(repository.getmAllVacations().size() - 1).getVacationId() + 1;
-                        vacation = new Vacation(vacationID, editTitle.getText().toString(), editHotel.getText().toString(), startDateString, endDateString);
+                        vacation = new Vacation(vacationID, titleInput, editHotel.getText().toString(), startDateString, endDateString);
                         repository.insert(vacation);
                         this.finish();
                     } else {
-                        vacation = new Vacation(vacationID, editTitle.getText().toString(), editHotel.getText().toString(), startDateString, endDateString);
+                        vacation = new Vacation(vacationID, titleInput, editHotel.getText().toString(), startDateString, endDateString);
                         repository.update(vacation);
                         this.finish();
                     }
@@ -304,21 +321,29 @@ public class VacationDetails extends AppCompatActivity {
     }
 
     public void alertPicker(String dateFromScreen, String alert) {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        Date myDate = null;
         try {
-            myDate = sdf.parse(dateFromScreen);
-        } catch (ParseException e) {
+            String myFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            long triggerTime = sdf.parse(dateFromScreen).getTime();
+
+            // Store securely
+            SecurePrefs.saveAlertTime(this, "alert_" + numAlert, triggerTime);
+
+            Intent intent = new Intent(VacationDetails.this, MyReceiver.class);
+            intent.putExtra("key", alert);
+            PendingIntent sender = PendingIntent.getBroadcast(
+                    VacationDetails.this,
+                    numAlert,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+            );
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, sender);
+            numAlert = rand.nextInt(99999);
+        } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, "Failed to set alert", Toast.LENGTH_SHORT).show();
         }
-        Long trigger = myDate.getTime();
-        Intent intent = new Intent(VacationDetails.this, MyReceiver.class);
-        intent.putExtra("key", alert);
-        PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
-        numAlert = rand.nextInt(99999);
     }
 
     @Override

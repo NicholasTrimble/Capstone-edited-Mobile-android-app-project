@@ -1,11 +1,12 @@
 package com.nicholastrimble.vacationscheduler.entities;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "vacations")
+@Entity(tableName = "vacations", indices = {@Index(value = {"vacationTitle"}, unique = false)})
 public class Vacation {
 
     @PrimaryKey(autoGenerate = true)

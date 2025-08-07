@@ -9,11 +9,14 @@ import android.widget.Button;
 
 import com.nicholastrimble.vacationscheduler.R;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 public class MainActivity extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SQLiteDatabase.loadLibs(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

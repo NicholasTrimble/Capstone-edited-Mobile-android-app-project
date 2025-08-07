@@ -25,4 +25,7 @@ public interface VacationDAO {
 
     @Query("SELECT * FROM vacations WHERE vacationTitle LIKE :query")
     List<Vacation> searchVacations(String query);
+
+    @Query("SELECT * FROM vacations LIMIT :pageSize OFFSET :pageIndex * :pageSize")
+    List<Vacation> getVacationsPaginated(int pageSize, int pageIndex);
 }

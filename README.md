@@ -68,3 +68,10 @@ app/release/app-release.apk
 Screenshots of the signing process and the final APK are included in the submission, along with the full project files and Git history.
 Here is my git repository Link
 https://gitlab.com/wgu-gitlab-environment/student-repos/ntrimb10/d308-mobile-application-development-android.git
+
+
+## Scalability Features
+- **Pagination**: Loads data in chunks (10 items/page)
+- **Database Indexing**: Faster search on vacation titles
+- **Async Operations**: All database calls run off UI thread
+- 
