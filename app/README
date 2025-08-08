@@ -74,4 +74,3 @@ https://gitlab.com/wgu-gitlab-environment/student-repos/ntrimb10/d308-mobile-app
 - **Pagination**: Loads data in chunks (10 items/page)
 - **Database Indexing**: Faster search on vacation titles
 - **Async Operations**: All database calls run off UI thread
--

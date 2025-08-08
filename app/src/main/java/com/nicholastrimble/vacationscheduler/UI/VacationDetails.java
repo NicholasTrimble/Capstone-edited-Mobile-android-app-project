@@ -222,6 +222,19 @@ public class VacationDetails extends AppCompatActivity {
                 return true;
             }
 
+            if (titleInput.trim().isEmpty()) {
+                editTitle.setError("Title is required");
+                editTitle.requestFocus();
+                return true;
+            }
+
+            String hotelInput = editHotel.getText().toString();
+            if (hotelInput.trim().isEmpty()) {
+                editHotel.setError("Hotel is required");
+                editHotel.requestFocus();
+                return true;
+            }
+
             String myFormat = "MM/dd/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
             String startDateString = sdf.format(myCalendarStart.getTime());
@@ -237,11 +250,11 @@ public class VacationDetails extends AppCompatActivity {
                     if (vacationID == -1) {
                         if (repository.getmAllVacations().size() == 0) vacationID = 1;
                         else vacationID = repository.getmAllVacations().get(repository.getmAllVacations().size() - 1).getVacationId() + 1;
-                        vacation = new Vacation(vacationID, titleInput, editHotel.getText().toString(), startDateString, endDateString);
+                        vacation = new Vacation(vacationID, titleInput, hotelInput, startDateString, endDateString);
                         repository.insert(vacation);
                         this.finish();
                     } else {
-                        vacation = new Vacation(vacationID, titleInput, editHotel.getText().toString(), startDateString, endDateString);
+                        vacation = new Vacation(vacationID, titleInput, hotelInput, startDateString, endDateString);
                         repository.update(vacation);
                         this.finish();
                     }
@@ -362,4 +375,5 @@ public class VacationDetails extends AppCompatActivity {
         updateLabelStart();
         updateLabelEnd();
     }
+
 }
