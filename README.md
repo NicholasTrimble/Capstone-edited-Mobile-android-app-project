@@ -1,29 +1,77 @@
-<strong>**DO NOT DISTRIBUTE OR PUBLICLY POST SOLUTIONS TO THESE LABS. MAKE ALL FORKS OF THIS REPOSITORY WITH SOLUTION CODE PRIVATE. PLEASE REFER TO THE STUDENT CODE OF CONDUCT AND ETHICAL EXPECTATIONS FOR COLLEGE OF INFORMATION TECHNOLOGY STUDENTS FOR SPECIFICS. **</strong>
+Vacation Scheduler Android App
 
-# WESTERN GOVERNORS UNIVERSITY 
-## D424 – SOFTWARE ENGINEERING CAPSTONE
-Welcome to Software Engineering Capstone! This is an opportunity for students to develop full stack software engineering documentation and applications. They will execute documentation, unit testing, revision of software applications, and deploy software applications with scripts and containers on a cloud platform.
+This project gave me the chance to learn hands-on how to build an Android application from the ground up using Java and Android Studio. It was created as part of my mobile application development course, and the goal was to develop a working vacation planner that allows users to create, edit, and manage vacations along with any related excursions.
 
-FOR SPECIFIC TASK INSTRUCTIONS AND REQUIREMENTS FOR THIS ASSESSMENT, PLEASE REFER TO THE COURSE PAGE.
-BASIC INSTRUCTIONS
-For this assessment, you will deploy your developed full stack software product to a web service of your choice.
+Through this project, I learned how to use the Room database to store user data locally, how to build a multi-screen mobile app, how to validate user input, and how to add features like alerts and sharing. I also got experience building and signing an APK for deployment.
+What the App Does
+
+Users can add, update, and delete vacations
+
+Each vacation has a title, hotel name, start date, and end date
+
+Excursions can be added to any vacation with a title and date
+
+The app validates that the vacation dates are in the correct format and that the end date comes after the start date
+
+Excursion dates must fall within the vacation dates
+
+Alerts can be set for vacation start and end dates, as well as for individual excursions
+
+Vacation details can be shared through email, SMS, or by copying to the clipboard
+
+All data is saved locally using the Room persistence library
+
+The app does not require an internet connection
+
+Compatibility
+
+This app is built for Android devices running version 8.0 (API level 26) or higher. I used the latest tools available at the time, including:
+
+Android Studio Hedgehog
+
+Java 11
+
+Room 2.6.1
+
+compileSdkVersion 36
+
+targetSdkVersion 36
+
+minSdkVersion 26
+
+How to Run the App
+
+1. Clone the Git repository:
+git clone https://gitlab.com/your-username/vacation-scheduler.git
+
+2. Open the project in Android Studio (Hedgehog or newer)
+
+3. Build and run the app using an Android emulator or a physical device running Android 8.0 or later
+
+How to Use It
+
+When the app launches, you'll land on the home screen. From there, you can navigate to the vacation list, where you’ll see all vacations you've added.
+
+To add a vacation, tap the "+" button. You'll be taken to a screen where you can enter the vacation title, hotel name, and the start and end dates. You can also add excursions from this screen. Once you're done, use the menu in the top right corner to save the vacation.
+
+You can set alerts for the vacation's start and end dates using the same menu. You can also share the vacation details if needed.
+
+To delete a vacation, go back to the list, select the vacation, and use the menu to delete it. Note that vacations can’t be deleted if they still have excursions tied to them.
+
+To add an excursion, go to the vacation's detail screen and tap the "+" button. You'll enter a title and date for the excursion. Excursion dates must fall between the vacation's start and end dates. You can also set an alert for the excursion date using the menu.
+Deployment Info
+
+The signed APK was generated using Android Studio’s "Generate Signed APK" tool. The APK can be found at:
+
+app/release/app-release.apk
+
+Screenshots of the signing process and the final APK are included in the submission, along with the full project files and Git history.
+Here is my git repository Link
+https://gitlab.com/wgu-gitlab-environment/student-repos/ntrimb10/d308-mobile-application-development-android.git
 
 
-## SUPPLEMENTAL RESOURCES  
-1.	How to clone a project to IntelliJ using Git?
-
-> Ensure that you have Git installed on your system and that IntelliJ is installed using [Toolbox](https://www.jetbrains.com/toolbox-app/). Make sure that you are using version 2022.3.2. Once this has been confirmed, click the clone button and use the 'IntelliJ IDEA (HTTPS)' button. This will open IntelliJ with a prompt to clone the proejct. Save it in a safe location for the directory and press clone. IntelliJ will prompt you for your credentials. Enter in your WGU Credentials and the project will be cloned onto your local machine.  
-
-2. How to create a branch and start Development?
-
-- GitLab method
-> Press the '+' button located near your branch name. In the dropdown list, press the 'New branch' button. This will allow you to create a name for your branch. Once the branch has been named, you can select 'Create Branch' to push the branch to your repository.
-
-- IntelliJ method
-> In IntelliJ, Go to the 'Git' button on the top toolbar. Select the new branch option and create a name for the branch. Make sure checkout branch is selected and press create. You can now add a commit message and push the new branch to the local repo.
-
-## SUPPORT
-If you need additional support, please navigate to the course page and reach out to your course instructor.
-
-## FUTURE USE
-Take this opportunity to create or add to a simple resume portfolio to highlight and showcase your work for future use in career search, experience, and education!
+## Scalability Features
+- **Pagination**: Loads data in chunks (10 items/page)
+- **Database Indexing**: Faster search on vacation titles
+- **Async Operations**: All database calls run off UI thread
+- 
